@@ -55,7 +55,8 @@ async function migrateUsers() {
     };
   });
 
-  const { error } = await supabase.from('users').upsert(users);
+  // Use upsert to avoid duplicate key error on 'username'
+  const { error } = await supabase.from('users').upsert(users, { onConflict: ['username'] });
 
   if (error) console.error("❌ Error migrating users:", error);
   else console.log(`✔ ${users.length} users migrated\n`);
@@ -75,7 +76,8 @@ async function migratePlaces() {
     content_types: data.contentTypes || [],
     tags: data.tags || [],
     place_type: data.type,
-    published: data.published
+    // Ensure that 'published' is correctly interpreted as a boolean
+    published: (data.published === "true" || data.published === true) // Convert to boolean
   };
 
   const { error } = await supabase.from('places').upsert(place);
@@ -100,8 +102,10 @@ async function migrateDocuments() {
     tags: data.tags || []
   };
 
+  // Upsert document
   await supabase.from('documents').upsert(document);
 
+  // Handle content images
   if (data.contentImages?.length > 0) {
     const images = data.contentImages.map(img => ({
       content_id: data.id,
@@ -149,6 +153,7 @@ async function migratePosts() {
 
   await supabase.from('posts').upsert(post);
 
+  // Handle content images for posts
   if (raw.contentImages?.length > 0) {
     const images = raw.contentImages.map(img => ({
       content_id: raw.id,
