@@ -49,4 +49,28 @@ export const postsAPI = {
   delete: (id) => api.delete(`/posts/${id}`),
 };
 
+export const pollsAPI = {
+  getAll: () => api.get('/polls'),
+  getById: (id) => api.get(`/polls/${id}`),
+  create: (data) => api.post('/polls', data),
+  update: (id, data) => api.put(`/polls/${id}`, data),
+  delete: (id) => api.delete(`/polls/${id}`),
+};
+
+export const videosAPI = {
+  getAll: () => api.get('/videos'),
+  getById: (id) => api.get(`/videos/${id}`),
+  create: (data) => api.post('/videos', data),
+  update: (id, data) => api.put(`/videos/${id}`, data),
+  delete: (id) => api.delete(`/videos/${id}`),
+};
+
+export const discussionsAPI = {
+  getAll: () => api.get('/discussions'),
+  getById: (id) => api.get(`/discussions/${id}`),
+  create: (data) => api.post('/discussions', data),
+  update: (id, data) => api.put(`/discussions/${id}`, data),
+  delete: (id) => api.delete(`/discussions/${id}`),
+};
+
 export default api;

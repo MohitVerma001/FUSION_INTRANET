@@ -9,6 +9,9 @@ const placesRoutes = require('./routes/places');
 const documentsRoutes = require('./routes/documents');
 const eventsRoutes = require('./routes/events');
 const postsRoutes = require('./routes/posts');
+const pollsRoutes = require('./routes/polls');
+const videosRoutes = require('./routes/videos');
+const discussionsRoutes = require('./routes/discussions');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,7 +31,10 @@ app.get('/api', (req, res) => {
       places: '/api/places',
       documents: '/api/documents',
       events: '/api/events',
-      posts: '/api/posts'
+      posts: '/api/posts',
+      polls: '/api/polls',
+      videos: '/api/videos',
+      discussions: '/api/discussions'
     }
   });
 });
@@ -38,6 +44,9 @@ app.use('/api/places', placesRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/posts', postsRoutes);
+app.use('/api/polls', pollsRoutes);
+app.use('/api/videos', videosRoutes);
+app.use('/api/discussions', discussionsRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
