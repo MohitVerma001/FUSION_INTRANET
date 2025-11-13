@@ -1,0 +1,128 @@
+.space-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.loading-spinner {
+  font-size: 18px;
+  color: #007acc;
+  padding: 32px;
+}
+
+.space-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  background-color: #fff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-tab {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.nav-tab:hover {
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+.nav-tab.active {
+  color: #007acc;
+  border-bottom-color: #007acc;
+  font-weight: 600;
+}
+
+.nav-actions {
+  padding: 12px 0;
+}
+
+.action-button {
+  padding: 8px 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-button:hover {
+  border-color: #007acc;
+  color: #007acc;
+}
+
+.space-content {
+  display: flex;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 400px);
+}
+
+.content-grid {
+  flex: 1;
+  padding: 24px 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  align-content: start;
+}
+
+.no-content {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 64px 24px;
+  color: #999;
+  font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+  .content-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .space-navigation {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-tabs {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .categories-sidebar {
+    display: none;
+  }
+}

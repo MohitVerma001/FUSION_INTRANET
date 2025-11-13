@@ -1,0 +1,20 @@
+.secondary-nav {
+  display: flex;
+  gap: 32px;
+  padding: 16px 32px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.nav-item {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: #007acc;
+}
