@@ -28,8 +28,14 @@ const ContentCard = ({ content }) => {
   };
 
   const getContentText = () => {
+    if (content.content_body?.text) {
+      return extractTextFromHTML(content.content_body.text);
+    }
     if (content.content?.text) {
       return extractTextFromHTML(content.content.text);
+    }
+    if (content.poll_description) {
+      return content.poll_description;
     }
     if (content.description) {
       return content.description;
@@ -70,7 +76,7 @@ const ContentCard = ({ content }) => {
       )}
 
       <div className="card-body">
-        <h3 className="card-title">{content.subject || content.question || content.title}</h3>
+        <h3 className="card-title">{content.subject || content.poll_question || content.question || content.title}</h3>
         <p className="card-excerpt">{getContentText()}</p>
 
         {content.author && (

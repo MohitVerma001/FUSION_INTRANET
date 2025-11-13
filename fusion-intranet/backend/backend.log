@@ -1,2 +1,6 @@
 🚀 Server running on http://localhost:5000
 📍 API available at http://localhost:5000/api
+Error fetching space: {
+  message: 'Invalid API key',
+  hint: 'Double check your Supabase `anon` or `service_role` API key.'
+}
