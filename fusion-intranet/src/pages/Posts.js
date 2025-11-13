@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import { postsAPI } from '../services/api';
 
 const Posts = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +37,11 @@ const Posts = () => {
       <Row>
         {posts.map(post => (
           <Col md={12} key={post.id} className="mb-4">
-            <Card className="shadow-sm">
+            <Card
+              className="shadow-sm"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/posts/${post.id}`)}
+            >
               <Card.Body>
                 <Card.Title as="h3">{post.subject}</Card.Title>
                 <Card.Subtitle className="mb-3 text-muted">

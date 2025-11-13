@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import { documentsAPI } from '../services/api';
 
 const Documents = () => {
+  const navigate = useNavigate();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +37,11 @@ const Documents = () => {
       <Row>
         {documents.map(doc => (
           <Col md={6} lg={4} key={doc.id} className="mb-4">
-            <Card className="h-100 shadow-sm">
+            <Card
+              className="h-100 shadow-sm"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/documents/${doc.id}`)}
+            >
               <Card.Body>
                 <Card.Title>{doc.subject}</Card.Title>
                 <Card.Text>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import { eventsAPI } from '../services/api';
 
 const Events = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +46,11 @@ const Events = () => {
       <Row>
         {events.map(event => (
           <Col md={6} lg={4} key={event.id} className="mb-4">
-            <Card className="h-100 shadow-sm border-start border-primary border-4">
+            <Card
+              className="h-100 shadow-sm border-start border-primary border-4"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/events/${event.id}`)}
+            >
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <Card.Title>{event.subject}</Card.Title>
