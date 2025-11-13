@@ -1,207 +1,147 @@
-/*
-  # Create Complete Spaces Schema from JSON Structure
-  
-  ## New Tables
-  
-  1. **spaces** (Parent container)
-     - id, placeID, name, displayName
-     - description, type
-     - contentTypes (JSONB array)
-     - tags (JSONB array)
-     - published
-  
-  2. **blogs** (Blog posts with rich HTML content)
-     - id, subject, content (JSONB with text field)
-     - author (JSONB), space_id (FK to spaces)
-     - tags, contentImages (JSONB array)
-     - likeCount, followerCount, viewCount
-     - published, updated
-  
-  3. **documents** (Documents with rich HTML content)
-     - id, subject, content (JSONB with text field)
-     - author (JSONB), space_id (FK to spaces)
-     - tags, contentImages (JSONB array), attachments (JSONB array)
-     - likeCount, followerCount, viewCount
-     - published, updated
-  
-  4. **polls** (Polls with nested options in JSONB)
-     - id, question, description
-     - author (JSONB), space_id (FK to spaces)
-     - options (JSONB array with nested structure)
-     - tags, endDate
-     - voteCount, published, updated
-  
-  5. **posts** (Social posts with rich content)
-     - Same structure as blogs
-     - Separate table for different content type
-  
-  6. **events** (Calendar events)
-     - id, subject, content (JSONB)
-     - author (JSONB), space_id (FK to spaces)
-     - location, phone
-     - startDate, endDate
-     - attendance (JSONB), tags
-     - published, updated
-  
-  ## Relationships
-  - All content types have space_id → spaces(id) foreign key
-  - Uses JSONB for nested structures (author, content, images, etc.)
-  - Preserves exact JSON structure from source files
-  
-  ## Security
-  - RLS enabled on all tables
-  - Public read access for authenticated users
-*/
-
 -- Create spaces table (parent container)
 CREATE TABLE IF NOT EXISTS spaces (
-  id text PRIMARY KEY,
-  place_id text,
-  name text NOT NULL,
-  display_name text,
-  description text,
-  space_type text,
-  content_types jsonb DEFAULT '[]'::jsonb,
-  tags jsonb DEFAULT '[]'::jsonb,
-  published timestamptz,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
+  id UUID PRIMARY KEY,                         -- Unique identifier for the space
+  placeid TEXT,                                -- Place ID (unique identifier)
+  name TEXT NOT NULL,                          -- Space name
+  displayname TEXT,                            -- Display name for the space
+  description TEXT,                            -- Description of the space
+  spacetype TEXT,                              -- Type of space (e.g., 'space')
+  content_types JSONB DEFAULT '[]'::jsonb,     -- Array of content types (JSONB)
+  tags JSONB DEFAULT '[]'::jsonb,              -- Array of tags (JSONB)
+  published TIMESTAMPTZ,                       -- Published timestamp
+  created_at TIMESTAMPTZ DEFAULT now(),        -- Created timestamp
+  updated_at TIMESTAMPTZ DEFAULT now()         -- Updated timestamp
 );
 
 -- Create blogs table
 CREATE TABLE IF NOT EXISTS blogs (
-  id text PRIMARY KEY,
-  subject text NOT NULL,
-  content jsonb NOT NULL,
-  space_id text REFERENCES spaces(id) ON DELETE CASCADE,
-  author jsonb,
-  parent_place jsonb,
-  tags jsonb DEFAULT '[]'::jsonb,
-  content_images jsonb DEFAULT '[]'::jsonb,
-  attachments jsonb DEFAULT '[]'::jsonb,
-  like_count integer DEFAULT 0,
-  follower_count integer DEFAULT 0,
-  view_count integer DEFAULT 0,
-  question boolean DEFAULT false,
-  restrict_replies boolean DEFAULT false,
-  content_type text DEFAULT 'post',
-  published timestamptz,
-  updated timestamptz,
-  created_at timestamptz DEFAULT now()
+  id UUID PRIMARY KEY,                         -- Unique identifier for the blog post
+  subject TEXT NOT NULL,                       -- Subject of the blog post
+  content JSONB NOT NULL,                      -- Content in JSONB format (rich HTML content)
+  space_id UUID REFERENCES spaces(id) ON DELETE CASCADE, -- Foreign key referencing spaces table
+  author JSONB,                                -- Author information (JSONB)
+  tags JSONB DEFAULT '[]'::jsonb,              -- Array of tags (JSONB)
+  content_images JSONB DEFAULT '[]'::jsonb,    -- Array of content images (JSONB)
+  attachments JSONB DEFAULT '[]'::jsonb,       -- Array of attachments (JSONB)
+  like_count INTEGER DEFAULT 0,                -- Like count
+  follower_count INTEGER DEFAULT 0,            -- Follower count
+  view_count INTEGER DEFAULT 0,                -- View count
+  question BOOLEAN DEFAULT false,              -- Indicates if the post is a question
+  restrict_replies BOOLEAN DEFAULT false,      -- Restrict replies (boolean)
+  content_type TEXT DEFAULT 'post',            -- Type of content
+  published TIMESTAMPTZ,                       -- Published timestamp
+  updated TIMESTAMPTZ,                         -- Updated timestamp
+  created_at TIMESTAMPTZ DEFAULT now()         -- Created timestamp
 );
 
 -- Create documents table
-CREATE TABLE IF NOT EXISTS documents_json (
-  id text PRIMARY KEY,
-  subject text NOT NULL,
-  content jsonb NOT NULL,
-  space_id text REFERENCES spaces(id) ON DELETE CASCADE,
-  author jsonb,
-  parent_place jsonb,
-  tags jsonb DEFAULT '[]'::jsonb,
-  content_images jsonb DEFAULT '[]'::jsonb,
-  attachments jsonb DEFAULT '[]'::jsonb,
-  like_count integer DEFAULT 0,
-  follower_count integer DEFAULT 0,
-  view_count integer DEFAULT 0,
-  question boolean DEFAULT false,
-  restrict_replies boolean DEFAULT false,
-  content_type text DEFAULT 'document',
-  published timestamptz,
-  updated timestamptz,
-  created_at timestamptz DEFAULT now()
+CREATE TABLE IF NOT EXISTS documents (
+  id UUID PRIMARY KEY,                         -- Unique identifier for the document
+  subject TEXT NOT NULL,                       -- Subject of the document
+  content JSONB NOT NULL,                      -- Content in JSONB format (rich HTML content)
+  space_id UUID REFERENCES spaces(id) ON DELETE CASCADE, -- Foreign key referencing spaces table
+  author JSONB,                                -- Author information (JSONB)
+  tags JSONB DEFAULT '[]'::jsonb,              -- Array of tags (JSONB)
+  content_images JSONB DEFAULT '[]'::jsonb,    -- Array of content images (JSONB)
+  attachments JSONB DEFAULT '[]'::jsonb,       -- Array of attachments (JSONB)
+  like_count INTEGER DEFAULT 0,                -- Like count
+  follower_count INTEGER DEFAULT 0,            -- Follower count
+  view_count INTEGER DEFAULT 0,                -- View count
+  question BOOLEAN DEFAULT false,              -- Indicates if the document is a question
+  restrict_replies BOOLEAN DEFAULT false,      -- Restrict replies (boolean)
+  content_type TEXT DEFAULT 'document',        -- Type of content
+  published TIMESTAMPTZ,                       -- Published timestamp
+  updated TIMESTAMPTZ,                         -- Updated timestamp
+  created_at TIMESTAMPTZ DEFAULT now()         -- Created timestamp
+);
+
+-- Create polls table
+CREATE TABLE IF NOT EXISTS polls (
+  id UUID PRIMARY KEY,                         -- Unique identifier for the poll
+  question TEXT NOT NULL,                      -- Question for the poll
+  description TEXT,                            -- Description of the poll
+  space_id UUID REFERENCES spaces(id) ON DELETE CASCADE, -- Foreign key referencing spaces table
+  author JSONB,                                -- Author information (JSONB)
+  options JSONB DEFAULT '[]'::jsonb,           -- Array of options (JSONB)
+  tags JSONB DEFAULT '[]'::jsonb,              -- Array of tags (JSONB)
+  end_date TIMESTAMPTZ,                        -- End date for the poll
+  allow_multiple_votes BOOLEAN DEFAULT false,  -- Allow multiple votes (boolean)
+  vote_count INTEGER DEFAULT 0,                -- Total vote count
+  view_count INTEGER DEFAULT 0,                -- View count
+  content_type TEXT DEFAULT 'poll',            -- Type of content
+  published TIMESTAMPTZ,                       -- Published timestamp
+  updated TIMESTAMPTZ,                         -- Updated timestamp
+  created_at TIMESTAMPTZ DEFAULT now()         -- Created timestamp
 );
 
 -- Create posts table (separate from blogs for organization)
-CREATE TABLE IF NOT EXISTS posts_json (
-  id text PRIMARY KEY,
-  subject text NOT NULL,
-  content jsonb NOT NULL,
-  space_id text REFERENCES spaces(id) ON DELETE CASCADE,
-  author jsonb,
-  parent_place jsonb,
-  tags jsonb DEFAULT '[]'::jsonb,
-  content_images jsonb DEFAULT '[]'::jsonb,
-  attachments jsonb DEFAULT '[]'::jsonb,
-  like_count integer DEFAULT 0,
-  follower_count integer DEFAULT 0,
-  view_count integer DEFAULT 0,
-  question boolean DEFAULT false,
-  restrict_replies boolean DEFAULT false,
-  content_type text DEFAULT 'post',
-  published timestamptz,
-  updated timestamptz,
-  created_at timestamptz DEFAULT now()
-);
-
--- Create polls table (with nested options in JSONB)
-CREATE TABLE IF NOT EXISTS polls_json (
-  id text PRIMARY KEY,
-  question text NOT NULL,
-  description text,
-  space_id text REFERENCES spaces(id) ON DELETE CASCADE,
-  author jsonb,
-  parent_place jsonb,
-  options jsonb DEFAULT '[]'::jsonb,
-  tags jsonb DEFAULT '[]'::jsonb,
-  end_date timestamptz,
-  allow_multiple_votes boolean DEFAULT false,
-  vote_count integer DEFAULT 0,
-  view_count integer DEFAULT 0,
-  content_type text DEFAULT 'poll',
-  published timestamptz,
-  updated timestamptz,
-  created_at timestamptz DEFAULT now()
+CREATE TABLE IF NOT EXISTS posts (
+  id UUID PRIMARY KEY,                         -- Unique identifier for the post
+  subject TEXT NOT NULL,                       -- Subject of the post
+  content JSONB NOT NULL,                      -- Content in JSONB format (rich HTML content)
+  space_id UUID REFERENCES spaces(id) ON DELETE CASCADE, -- Foreign key referencing spaces table
+  author JSONB,                                -- Author information (JSONB)
+  tags JSONB DEFAULT '[]'::jsonb,              -- Array of tags (JSONB)
+  content_images JSONB DEFAULT '[]'::jsonb,    -- Array of content images (JSONB)
+  attachments JSONB DEFAULT '[]'::jsonb,       -- Array of attachments (JSONB)
+  like_count INTEGER DEFAULT 0,                -- Like count
+  follower_count INTEGER DEFAULT 0,            -- Follower count
+  view_count INTEGER DEFAULT 0,                -- View count
+  question BOOLEAN DEFAULT false,              -- Indicates if the post is a question
+  restrict_replies BOOLEAN DEFAULT false,      -- Restrict replies (boolean)
+  content_type TEXT DEFAULT 'post',            -- Type of content
+  published TIMESTAMPTZ,                       -- Published timestamp
+  updated TIMESTAMPTZ,                         -- Updated timestamp
+  created_at TIMESTAMPTZ DEFAULT now()         -- Created timestamp
 );
 
 -- Create events table
-CREATE TABLE IF NOT EXISTS events_json (
-  id text PRIMARY KEY,
-  subject text NOT NULL,
-  content jsonb NOT NULL,
-  space_id text REFERENCES spaces(id) ON DELETE CASCADE,
-  author jsonb,
-  parent_place jsonb,
-  location text,
-  phone text,
-  start_date timestamptz,
-  end_date timestamptz,
-  event_access text,
-  max_attendees integer DEFAULT -1,
-  attendance jsonb,
-  tags jsonb DEFAULT '[]'::jsonb,
-  like_count integer DEFAULT 0,
-  follower_count integer DEFAULT 0,
-  view_count integer DEFAULT 0,
-  question boolean DEFAULT false,
-  restrict_replies boolean DEFAULT false,
-  content_type text DEFAULT 'event',
-  published timestamptz,
-  updated timestamptz,
-  created_at timestamptz DEFAULT now()
+CREATE TABLE IF NOT EXISTS events (
+  id UUID PRIMARY KEY,                         -- Unique identifier for the event
+  subject TEXT NOT NULL,                       -- Subject of the event
+  content JSONB NOT NULL,                      -- Content in JSONB format (event details)
+  space_id UUID REFERENCES spaces(id) ON DELETE CASCADE, -- Foreign key referencing spaces table
+  author JSONB,                                -- Author information (JSONB)
+  location TEXT,                               -- Event location
+  phone TEXT,                                  -- Contact phone
+  start_date TIMESTAMPTZ,                      -- Start date for the event
+  end_date TIMESTAMPTZ,                        -- End date for the event
+  event_access TEXT,                           -- Event access type
+  max_attendees INTEGER DEFAULT -1,            -- Max attendees
+  attendance JSONB,                            -- Attendance list (JSONB)
+  tags JSONB DEFAULT '[]'::jsonb,              -- Array of tags (JSONB)
+  like_count INTEGER DEFAULT 0,                -- Like count
+  follower_count INTEGER DEFAULT 0,            -- Follower count
+  view_count INTEGER DEFAULT 0,                -- View count
+  question BOOLEAN DEFAULT false,              -- Indicates if the event is a question
+  restrict_replies BOOLEAN DEFAULT false,      -- Restrict replies (boolean)
+  content_type TEXT DEFAULT 'event',           -- Type of content
+  published TIMESTAMPTZ,                       -- Published timestamp
+  updated TIMESTAMPTZ,                         -- Updated timestamp
+  created_at TIMESTAMPTZ DEFAULT now()         -- Created timestamp
 );
 
--- Create indexes for performance
+-- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_blogs_space ON blogs(space_id);
 CREATE INDEX IF NOT EXISTS idx_blogs_published ON blogs(published DESC);
-CREATE INDEX IF NOT EXISTS idx_documents_space ON documents_json(space_id);
-CREATE INDEX IF NOT EXISTS idx_documents_published ON documents_json(published DESC);
-CREATE INDEX IF NOT EXISTS idx_posts_space ON posts_json(space_id);
-CREATE INDEX IF NOT EXISTS idx_posts_published ON posts_json(published DESC);
-CREATE INDEX IF NOT EXISTS idx_polls_space ON polls_json(space_id);
-CREATE INDEX IF NOT EXISTS idx_polls_published ON polls_json(published DESC);
-CREATE INDEX IF NOT EXISTS idx_events_space ON events_json(space_id);
-CREATE INDEX IF NOT EXISTS idx_events_start ON events_json(start_date DESC);
+CREATE INDEX IF NOT EXISTS idx_documents_space ON documents(space_id);
+CREATE INDEX IF NOT EXISTS idx_documents_published ON documents(published DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_space ON posts(space_id);
+CREATE INDEX IF NOT EXISTS idx_posts_published ON posts(published DESC);
+CREATE INDEX IF NOT EXISTS idx_polls_space ON polls(space_id);
+CREATE INDEX IF NOT EXISTS idx_polls_published ON polls(published DESC);
+CREATE INDEX IF NOT EXISTS idx_events_space ON events(space_id);
+CREATE INDEX IF NOT EXISTS idx_events_start ON events(start_date DESC);
 
--- Enable RLS on all tables
+-- Enable Row Level Security on all tables
 ALTER TABLE spaces ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE documents_json ENABLE ROW LEVEL SECURITY;
-ALTER TABLE posts_json ENABLE ROW LEVEL SECURITY;
-ALTER TABLE polls_json ENABLE ROW LEVEL SECURITY;
-ALTER TABLE events_json ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE polls ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 
--- Create RLS policies for public read access
+-- Create Row Level Security policies for public read access
 CREATE POLICY "Public read access for spaces"
   ON spaces FOR SELECT
   TO authenticated
@@ -213,26 +153,26 @@ CREATE POLICY "Public read access for blogs"
   USING (true);
 
 CREATE POLICY "Public read access for documents"
-  ON documents_json FOR SELECT
+  ON documents FOR SELECT
   TO authenticated
   USING (true);
 
 CREATE POLICY "Public read access for posts"
-  ON posts_json FOR SELECT
+  ON posts FOR SELECT
   TO authenticated
   USING (true);
 
 CREATE POLICY "Public read access for polls"
-  ON polls_json FOR SELECT
+  ON polls FOR SELECT
   TO authenticated
   USING (true);
 
 CREATE POLICY "Public read access for events"
-  ON events_json FOR SELECT
+  ON events FOR SELECT
   TO authenticated
   USING (true);
 
--- Insert operations for authenticated users
+-- Create Row Level Security policies for inserts by authenticated users
 CREATE POLICY "Allow inserts for authenticated users on spaces"
   ON spaces FOR INSERT
   TO authenticated
@@ -244,21 +184,21 @@ CREATE POLICY "Allow inserts for authenticated users on blogs"
   WITH CHECK (true);
 
 CREATE POLICY "Allow inserts for authenticated users on documents"
-  ON documents_json FOR INSERT
+  ON documents FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
 CREATE POLICY "Allow inserts for authenticated users on posts"
-  ON posts_json FOR INSERT
+  ON posts FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
 CREATE POLICY "Allow inserts for authenticated users on polls"
-  ON polls_json FOR INSERT
+  ON polls FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
 CREATE POLICY "Allow inserts for authenticated users on events"
-  ON events_json FOR INSERT
+  ON events FOR INSERT
   TO authenticated
   WITH CHECK (true);
