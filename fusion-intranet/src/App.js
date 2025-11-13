@@ -8,6 +8,7 @@ import Events from './pages/Events';
 import Calendar from './pages/Calendar';
 import AdminPanel from './admin-panel/AdminPanel';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/main.scss';
 import './App.css';
 
 function App() {

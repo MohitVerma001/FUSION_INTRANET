@@ -1,0 +1,395 @@
+// FUSION Intranet Main Styles
+// Professional, clean design with modern aesthetics
+
+// Color Palette
+$primary-color: #0066cc;
+$secondary-color: #2c3e50;
+$accent-color: #e74c3c;
+$success-color: #27ae60;
+$warning-color: #f39c12;
+$light-bg: #f8f9fa;
+$dark-text: #2c3e50;
+$light-text: #7f8c8d;
+$border-color: #e1e8ed;
+
+// Typography
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+$heading-font-weight: 600;
+$body-font-weight: 400;
+
+// Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Global Styles
+body {
+  font-family: $font-family;
+  color: $dark-text;
+  background-color: $light-bg;
+  line-height: 1.6;
+}
+
+// Navigation
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: $heading-font-weight;
+    color: white !important;
+
+    strong {
+      color: #ffd700;
+    }
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: white !important;
+    }
+  }
+}
+
+// Cards
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    color: $dark-text;
+    font-weight: $heading-font-weight;
+    margin-bottom: $spacing-sm;
+  }
+
+  .card-text {
+    color: $light-text;
+  }
+}
+
+// Buttons
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Page Headers
+.page-header {
+  margin-bottom: $spacing-lg;
+  padding-bottom: $spacing-sm;
+  border-bottom: 2px solid $border-color;
+  animation: slideIn 0.5s ease;
+
+  h1, h2 {
+    color: $dark-text;
+    font-weight: $heading-font-weight;
+    margin-bottom: $spacing-xs;
+  }
+
+  .lead {
+    color: $light-text;
+  }
+}
+
+// Landing Page Styles
+.landing-section {
+  margin-bottom: $spacing-xl;
+
+  .section-title {
+    color: $dark-text;
+    font-weight: $heading-font-weight;
+    margin-bottom: $spacing-md;
+    font-size: 1.75rem;
+  }
+}
+
+.welcome-banner {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  color: white;
+  padding: $spacing-xl $spacing-lg;
+  border-radius: 12px;
+  margin-bottom: $spacing-lg;
+  animation: fadeIn 0.6s ease;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: $heading-font-weight;
+    margin-bottom: $spacing-sm;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    opacity: 0.95;
+  }
+}
+
+// Event Cards
+.event-card {
+  border-left: 4px solid $primary-color;
+
+  &.event-upcoming {
+    border-left-color: $success-color;
+  }
+
+  &.event-today {
+    border-left-color: $accent-color;
+  }
+}
+
+// Document Cards
+.document-card {
+  .document-icon {
+    font-size: 2rem;
+    color: $primary-color;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+// Post Cards
+.post-card {
+  margin-bottom: $spacing-md;
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    color: $light-text;
+    font-size: 0.9rem;
+    margin-bottom: $spacing-sm;
+  }
+
+  .post-stats {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-sm;
+    padding-top: $spacing-sm;
+    border-top: 1px solid $border-color;
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      color: $light-text;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Tables
+.table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  thead {
+    background-color: $secondary-color;
+    color: white;
+
+    th {
+      font-weight: $heading-font-weight;
+      border: none;
+      padding: 1rem;
+    }
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.05);
+    }
+  }
+}
+
+// Badges
+.badge {
+  padding: 0.4em 0.8em;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+// Loading States
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+
+  .spinner-border {
+    color: $primary-color;
+  }
+}
+
+// Empty States
+.empty-state {
+  text-align: center;
+  padding: $spacing-xl;
+  color: $light-text;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+  }
+
+  h3 {
+    color: $dark-text;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+// Admin Panel
+.admin-panel {
+  .admin-header {
+    background: linear-gradient(135deg, $secondary-color 0%, $primary-color 100%);
+    color: white;
+    padding: $spacing-lg;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: $spacing-lg;
+  }
+
+  .nav-tabs {
+    border-bottom: 2px solid $border-color;
+
+    .nav-link {
+      color: $light-text;
+      font-weight: 500;
+      border: none;
+      padding: 1rem 1.5rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: $primary-color;
+        background-color: rgba($primary-color, 0.05);
+      }
+
+      &.active {
+        color: $primary-color;
+        background-color: white;
+        border-bottom: 2px solid $primary-color;
+      }
+    }
+  }
+}
+
+// Forms
+.form-control, .form-select {
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.15);
+  }
+}
+
+// Modal
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background-color: $secondary-color;
+  color: white;
+  border-radius: 12px 12px 0 0;
+  padding: $spacing-md $spacing-lg;
+
+  .modal-title {
+    font-weight: $heading-font-weight;
+  }
+
+  .btn-close {
+    filter: invert(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .welcome-banner {
+    padding: $spacing-lg $spacing-md;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .lead {
+      font-size: 1rem;
+    }
+  }
+
+  .card {
+    margin-bottom: $spacing-md;
+  }
+
+  .post-stats {
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+}
+
+// Utility Classes
+.text-muted-light {
+  color: $light-text !important;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+}
+
+.shadow-hover {
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+}
