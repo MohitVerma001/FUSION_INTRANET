@@ -44,22 +44,29 @@ const spacesController = {
         });
       }
 
-      // Get all content for this space
-      const [postsRes, docsRes, eventsRes, pollsRes] = await Promise.all([
-        supabase.from('posts_json').select('*').eq('space_id', id),
-        supabase.from('documents_json').select('*').eq('space_id', id),
-        supabase.from('events_json').select('*').eq('space_id', id),
-        supabase.from('polls_json').select('*').eq('space_id', id)
-      ]);
+      // Get all content from unified table
+      const { data: allContent, error: contentError } = await supabase
+        .from('content')
+        .select('*')
+        .eq('space_id', id)
+        .order('published', { ascending: false });
+
+      if (contentError) throw contentError;
+
+      // Group content by type for backwards compatibility
+      const posts = allContent.filter(c => c.content_type === 'post');
+      const documents = allContent.filter(c => c.content_type === 'document');
+      const events = allContent.filter(c => c.content_type === 'event');
+      const polls = allContent.filter(c => c.content_type === 'poll');
 
       res.json({
         success: true,
         data: {
           space,
-          posts: postsRes.data || [],
-          documents: docsRes.data || [],
-          events: eventsRes.data || [],
-          polls: pollsRes.data || []
+          posts,
+          documents,
+          events,
+          polls
         }
       });
     } catch (error) {
@@ -76,23 +83,17 @@ const spacesController = {
     try {
       const { id } = req.params;
 
-      const [postsRes, docsRes, eventsRes, pollsRes] = await Promise.all([
-        supabase.from('posts_json').select('*').eq('space_id', id).order('published', { ascending: false }),
-        supabase.from('documents_json').select('*').eq('space_id', id).order('published', { ascending: false }),
-        supabase.from('events_json').select('*').eq('space_id', id).order('start_date', { ascending: false }),
-        supabase.from('polls_json').select('*').eq('space_id', id).order('published', { ascending: false })
-      ]);
+      const { data: allContent, error } = await supabase
+        .from('content')
+        .select('*')
+        .eq('space_id', id)
+        .order('published', { ascending: false });
 
-      const allContent = [
-        ...(postsRes.data || []),
-        ...(docsRes.data || []),
-        ...(eventsRes.data || []),
-        ...(pollsRes.data || [])
-      ].sort((a, b) => new Date(b.published || b.start_date) - new Date(a.published || a.start_date));
+      if (error) throw error;
 
       res.json({
         success: true,
-        data: allContent
+        data: allContent || []
       });
     } catch (error) {
       console.error('Error fetching space content:', error);
